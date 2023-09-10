@@ -32,6 +32,7 @@ export default function MyArticles() {
 	let history = useHistory();
 	const classes = useStyles();
 	const [tableData, setTableData] = useState({});
+	const [loading, setLoading] = useState(false);
 
 	const searchByQuery = query => {
 		loadMyArticles(query);
@@ -45,12 +46,16 @@ export default function MyArticles() {
 	const { myArticles } = useContext(ArticleContext);
 
 	const loadMyArticles = query => {
+		setLoading(true);
 		myArticles(query)
 			.then(d => {
 				console.log('D==>', d);
 				setTableData(d);
+				setLoading(false);
 			})
-			.catch(e => console.log('ERR:', e));
+			.catch(e => {
+				setLoading(false);
+			});
 	};
 
 	useEffect(loadMyArticles, []);
@@ -77,41 +82,47 @@ export default function MyArticles() {
 									<TableCell align="center">Action</TableCell>
 								</TableRow>
 							</TableHead>
-							<TableBody>
-								{rows.length ? (
-									rows.map(row => (
-										<TableRow key={row._id}>
-											<TableCell component="th" scope="row">
-												{row.title}
-											</TableCell>
-											<TableCell align="center">
-												{row.categories.length
-													? row.categories.map(c => {
-															return (
-																<Chip
-																	style={{ marginTop: 5, marginRight: 2 }}
-																	key={c._id}
-																	label={c.name}
-																/>
-															);
-													  })
-													: '-'}
-											</TableCell>
-											<TableCell align="center">{moment(row.createdAt).format('LL')}</TableCell>
-											<TableCell align="center">{row.status}</TableCell>
-											<TableCell align="center">
-												<Link title="Edit" to={`/articles/${row._id}`}>
-													<EditIcon name="Edit" />
-												</Link>
-											</TableCell>
+							{loading ? (
+								'<div style={{padding:20}}>Loading...</div>'
+							) : (
+								<TableBody>
+									{rows.length ? (
+										rows.map(row => (
+											<TableRow key={row._id}>
+												<TableCell component="th" scope="row">
+													{row.title}
+												</TableCell>
+												<TableCell align="center">
+													{row.categories.length
+														? row.categories.map(c => {
+																return (
+																	<Chip
+																		style={{ marginTop: 5, marginRight: 2 }}
+																		key={c._id}
+																		label={c.name}
+																	/>
+																);
+														  })
+														: '-'}
+												</TableCell>
+												<TableCell align="center">
+													{moment(row.createdAt).format('LL')}
+												</TableCell>
+												<TableCell align="center">{row.status}</TableCell>
+												<TableCell align="center">
+													<Link title="Edit" to={`/articles/${row._id}`}>
+														<EditIcon name="Edit" />
+													</Link>
+												</TableCell>
+											</TableRow>
+										))
+									) : (
+										<TableRow>
+											<TableCell>No data available.</TableCell>
 										</TableRow>
-									))
-								) : (
-									<TableRow>
-										<TableCell>No data available.</TableCell>
-									</TableRow>
-								)}
-							</TableBody>
+									)}
+								</TableBody>
+							)}
 						</Table>
 					</TableContainer>
 				</div>
