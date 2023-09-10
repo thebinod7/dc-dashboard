@@ -15,6 +15,63 @@ import { Profile, SidebarNav } from './components';
 import roles from '../../constants/roles';
 import { getUser } from '../../services/users';
 
+const BASIC_PAGES = [
+	{
+		title: 'My Articles',
+		href: '/my-articles',
+		icon: <ContactMailIcon />
+	},
+	{
+		title: 'Account',
+		href: '/account',
+		icon: <AccountBoxIcon />
+	},
+	{
+		title: 'Settings',
+		href: '/settings',
+		icon: <SettingsIcon />
+	}
+];
+
+const ADMIN_PAGES = [
+	{
+		title: 'Dashboard',
+		href: '/',
+		icon: <DashboardIcon />
+	},
+	{
+		title: 'My Articles',
+		href: '/my-articles',
+		icon: <ContactMailIcon />
+	},
+	{
+		title: 'Users',
+		href: '/users',
+		icon: <PeopleIcon />
+	},
+	{
+		title: 'Category',
+		href: '/category',
+		icon: <CategoryIcon />
+	},
+	{
+		title: 'Articles',
+		href: '/articles',
+		icon: <DescriptionIcon />
+	},
+
+	{
+		title: 'Account',
+		href: '/account',
+		icon: <AccountBoxIcon />
+	},
+	{
+		title: 'Settings',
+		href: '/settings',
+		icon: <SettingsIcon />
+	}
+];
+
 const useStyles = makeStyles(theme => ({
 	drawer: {
 		width: 240,
@@ -41,74 +98,18 @@ const useStyles = makeStyles(theme => ({
 const Sidebar = props => {
 	const { open, variant, onClose, className, ...rest } = props;
 
-	const BASIC_PAGES = [
-		{
-			title: 'My Articles',
-			href: '/my-articles',
-			icon: <ContactMailIcon />
-		},
-		{
-			title: 'Account',
-			href: '/account',
-			icon: <AccountBoxIcon />
-		},
-		{
-			title: 'Settings',
-			href: '/settings',
-			icon: <SettingsIcon />
-		}
-	];
-
-	const ADMIN_PAGES = [
-		{
-			title: 'Dashboard',
-			href: '/',
-			icon: <DashboardIcon />
-		},
-		{
-			title: 'My Articles',
-			href: '/my-articles',
-			icon: <ContactMailIcon />
-		},
-		{
-			title: 'Users',
-			href: '/users',
-			icon: <PeopleIcon />
-		},
-		{
-			title: 'Category',
-			href: '/category',
-			icon: <CategoryIcon />
-		},
-		{
-			title: 'Articles',
-			href: '/articles',
-			icon: <DescriptionIcon />
-		},
-
-		{
-			title: 'Account',
-			href: '/account',
-			icon: <AccountBoxIcon />
-		},
-		{
-			title: 'Settings',
-			href: '/settings',
-			icon: <SettingsIcon />
-		}
-	];
-
-	const [displayPages, setDisplayPages] = useState(BASIC_PAGES);
+	const [displayPages, setDisplayPages] = useState([]);
 	const [user, setUser] = useState(null);
 
 	useEffect(() => {
 		async function fetchCurrentUser() {
 			const user = await getUser();
-			if (user.role === roles.USER) setDisplayPages(ADMIN_PAGES);
+			if (user.role !== roles.USER) setDisplayPages(ADMIN_PAGES);
+			else setDisplayPages(BASIC_PAGES);
 			setUser(user);
 		}
 		fetchCurrentUser();
-	}, [ADMIN_PAGES]);
+	}, []);
 
 	const classes = useStyles();
 

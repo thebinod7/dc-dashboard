@@ -28,7 +28,7 @@
     "react-image-crop": "^8.6.2",
     "react-perfect-scrollbar": "^1.5.8",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^5.0.1",
     "react-select": "^3.1.0",
     "sass": "^1.54.4",
     "uuid": "^8.3.2"
@@ -44,9 +44,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
