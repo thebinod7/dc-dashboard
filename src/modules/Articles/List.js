@@ -41,6 +41,7 @@ export default function List() {
 	});
 
 	const [isLoading, setLoading] = useState(false);
+	const [fetching, setFetching] = useState(false);
 
 	const handleSwitchChange = (rowId, event) => {
 		console.log(switchState);
@@ -77,11 +78,13 @@ export default function List() {
 	};
 
 	const getArticlesList = query => {
+		setFetching(true);
 		listArticles(query)
 			.then(d => {
 				setTableData(d);
+				setFetching(false);
 			})
-			.catch(e => console.log('ERR:', e));
+			.catch(e => setFetching(false));
 	};
 
 	useEffect(getArticlesList, []);
@@ -109,49 +112,55 @@ export default function List() {
 									<TableCell align="center">Action</TableCell>
 								</TableRow>
 							</TableHead>
-							<TableBody>
-								{rows.length ? (
-									rows.map(row => (
-										<TableRow key={row._id}>
-											<TableCell component="th" scope="row">
-												<Link title="Edit Article" to={`/articles/${row._id}`}>
-													{row.title}
-												</Link>
-											</TableCell>
-											<TableCell align="center">{row.user.name}</TableCell>
-											<TableCell align="center">
-												{row.categories.length
-													? row.categories.map(c => {
-															return (
-																<Chip
-																	style={{ marginTop: 5, marginRight: 2 }}
-																	key={c._id}
-																	label={c.name}
-																/>
-															);
-													  })
-													: '-'}
-											</TableCell>
-											<TableCell align="center">{moment(row.createdAt).format('LL')}</TableCell>
-											<TableCell align="center">{row.status}</TableCell>
-											<TableCell align="center">
-												<Switch
-													checked={row.status === STATUS.LIVE ? true : false}
-													onChange={event => handleSwitchChange(row._id, event)}
-													color="primary"
-													name="status"
-													disabled={isLoading ? true : false}
-													inputProps={{ 'aria-label': 'primary checkbox' }}
-												/>
-											</TableCell>
+							{fetching ? (
+								<div style={{ padding: 20 }}>Loading...</div>
+							) : (
+								<TableBody>
+									{rows.length ? (
+										rows.map(row => (
+											<TableRow key={row._id}>
+												<TableCell component="th" scope="row">
+													<Link title="Edit Article" to={`/articles/${row._id}`}>
+														{row.title}
+													</Link>
+												</TableCell>
+												<TableCell align="center">{row.user.name}</TableCell>
+												<TableCell align="center">
+													{row.categories.length
+														? row.categories.map(c => {
+																return (
+																	<Chip
+																		style={{ marginTop: 5, marginRight: 2 }}
+																		key={c._id}
+																		label={c.name}
+																	/>
+																);
+														  })
+														: '-'}
+												</TableCell>
+												<TableCell align="center">
+													{moment(row.createdAt).format('LL')}
+												</TableCell>
+												<TableCell align="center">{row.status}</TableCell>
+												<TableCell align="center">
+													<Switch
+														checked={row.status === STATUS.LIVE ? true : false}
+														onChange={event => handleSwitchChange(row._id, event)}
+														color="primary"
+														name="status"
+														disabled={isLoading ? true : false}
+														inputProps={{ 'aria-label': 'primary checkbox' }}
+													/>
+												</TableCell>
+											</TableRow>
+										))
+									) : (
+										<TableRow>
+											<TableCell>No data available.</TableCell>
 										</TableRow>
-									))
-								) : (
-									<TableRow>
-										<TableCell>No data available.</TableCell>
-									</TableRow>
-								)}
-							</TableBody>
+									)}
+								</TableBody>
+							)}
 						</Table>
 					</TableContainer>
 				</div>
