@@ -83,7 +83,7 @@ export default function MyArticles() {
 								</TableRow>
 							</TableHead>
 							{loading ? (
-								'<div style={{padding:20}}>Loading...</div>'
+								<div style={{ padding: 20 }}>Loading...</div>
 							) : (
 								<TableBody>
 									{rows.length ? (
